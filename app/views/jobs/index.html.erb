@@ -1,5 +1,16 @@
-<h1>All jobs</h1>
-<% @jobs.each do |job| %>
-  <h4><%= job.name %></h4>
-  <p><%= job.description.html_safe %></p>
+<% if params[:search] %>
+  <h1>Search Results</h1>
+  <p>Your search for "<%= @query %>" yielded <%= @jobs.count %> <%= 'result'.pluralize(@jobs.count) %>.</p>
+  <%= link_to "Clear Search", jobs_path %>
+<% else %>
+  <h1>All jobs</h1>
+<% end %>
+
+<% if @jobs %>
+  <% @jobs.each do |job| %>
+    <h4><%= job.name %></h4>
+    <p><%= job.description.html_safe %></p>
+  <% end %>
+<% else %>
+  <p>You have not created any jobs yet. Create one <%= link_to "here", new_job_path %>.</p>
 <% end %>

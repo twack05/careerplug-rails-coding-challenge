@@ -1,11 +1,17 @@
 class JobsController < ApplicationController
   before_action :authenticate_user!, only: [:index, :create]
+
   def index
-    @jobs = Job.all
+    if params[:search]
+      @jobs = Job.search(params[:search], current_user.id)
+      @query = params[:search]
+    else
+      @jobs = Job.where(user_id: current_user.id)
+    end
   end
 
   def new
-    @job = Job.new
+    @job = Job.new(user_id: current_user.id)
   end
 
   def create
@@ -22,6 +28,6 @@ class JobsController < ApplicationController
   private
 
   def permitted_params
-    params.require(:job).permit(:name, :description, :status, :employment_type)
+    params.require(:job).permit(:name, :description, :status, :employment_type, :user_id)
   end
 end
