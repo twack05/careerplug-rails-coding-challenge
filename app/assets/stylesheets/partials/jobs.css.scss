@@ -2,9 +2,19 @@ form.formtastic {
   .select {
     width: 20%;
   }
-  input.btn-action {
-    padding: 10px;
-    background-color: #0069aa;
-    color: #fff;
+}
+
+.btn-action {
+  padding: 10px;
+  background-color: #0069aa;
+  color: #fff;
+}
+
+.comment {
+  margin-left: 25px;
+  color: #0069aa;
+.comment-text {
+    margin-left: 30px;
+    color: #000;
   }
 }

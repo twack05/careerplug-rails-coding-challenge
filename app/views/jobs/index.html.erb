@@ -8,9 +8,58 @@
 
 <% if @jobs %>
   <% @jobs.each do |job| %>
-    <h4><%= job.name %></h4>
-    <p><%= job.description.html_safe %></p>
+    <h3>Job Title: <%= job.name %></h3>
+    <p>Description: <%= job.description.html_safe %></p>
+    <%= content_tag(:div, class: job.id) do %>
+      <h5>Comments</h5>
+      <% job.comments.each do |comment| %>
+      <div class="comment">
+        <p><%= comment.author %><p>
+        <p class="comment-text"><%= comment.text %></p>
+      </div>
+      <% end %>
+    <% end %>
+    <%= button_tag "Add A Comment", class: "comment-btn btn-action" %>
+      <div class="comment-form">
+        <div class="col-xs-12">
+          <label>Your Comment</label></br>
+            <input type="text" class="comment-text"/>
+            <%= button_tag "Submit", class: 'submit btn-action', id: job.id, data: current_user.full_name %>
+        </div>
+      </div>
   <% end %>
 <% else %>
   <p>You have not created any jobs yet. Create one <%= link_to "here", new_job_path %>.</p>
 <% end %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.comment-form').hide();
+    $('.comment-btn').on('click', function() {
+      $('.comment-form').hide();
+      $(this).next('.comment-form').show();
+    });
+
+    $('.submit').on('click', function() {
+      var id = $(this).attr('id'),
+          author = $(this).attr('data');
+          text = $(this).prev('.comment-text').val();
+
+      $.ajax({
+        type: 'POST',
+        url: '/jobs/'+ id +'/comments',
+        data: {comment: {author: author, text: text, job_id: id}},
+        success: function(data) {
+          $('.'+ data.job_id + '').append('<p>'+ data.author + ': ' + data.text +'');
+          $('.comment-form').val('');
+          $('.comment-form').hide();
+          return false;
+        },
+        error: function(data) {
+          console.log(data);
+          return false;
+        }
+      });
+    });
+  });
+</script>

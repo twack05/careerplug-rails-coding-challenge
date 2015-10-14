@@ -8,14 +8,16 @@ class JobsController < ApplicationController
     else
       @jobs = Job.where(user_id: current_user.id)
     end
+    @comment = Comment.new()
   end
 
   def new
-    @job = Job.new(user_id: current_user.id)
+    @job = Job.new()
   end
 
   def create
     @job = Job.new(permitted_params)
+    @job.user_id = current_user.id
     respond_to do |format|
       if @job.save
         format.html { redirect_to root_path, notice: 'Your job has been posted.' }
